@@ -15,17 +15,19 @@ class Actor(nn.Module):
 	def __init__(self, state_dim, action_dim, max_action):
 		super(Actor, self).__init__()
 
-		self.l1 = nn.Linear(state_dim, 256)
-		self.l2 = nn.Linear(256, 256)
-		self.l3 = nn.Linear(256, action_dim)
-		
+		self.l1 = nn.Linear(state_dim, 1024)
+		self.l2 = nn.Linear(1024, 512)
+		self.l3 = nn.Linear(512, 256)
+		self.l4 = nn.Linear(256, action_dim)
+
 		self.max_action = max_action
-		
+
 
 	def forward(self, state):
 		a = F.relu(self.l1(state))
 		a = F.relu(self.l2(a))
-		return self.max_action * torch.tanh(self.l3(a))
+		a = F.relu(self.l3(a))
+		return self.max_action * torch.tanh(self.l4(a))
 
 
 class Critic(nn.Module):
@@ -33,14 +35,16 @@ class Critic(nn.Module):
 		super(Critic, self).__init__()
 
 		# Q1 architecture
-		self.l1 = nn.Linear(state_dim + action_dim, 256)
-		self.l2 = nn.Linear(256, 256)
-		self.l3 = nn.Linear(256, 1)
+		self.l1 = nn.Linear(state_dim + action_dim, 1024)
+		self.l2 = nn.Linear(1024, 512)
+		self.l3 = nn.Linear(512, 256)
+		self.l4 = nn.Linear(256, 1)
 
 		# Q2 architecture
-		self.l4 = nn.Linear(state_dim + action_dim, 256)
-		self.l5 = nn.Linear(256, 256)
-		self.l6 = nn.Linear(256, 1)
+		self.l5 = nn.Linear(state_dim + action_dim, 1024)
+		self.l6 = nn.Linear(1024, 512)
+		self.l7 = nn.Linear(512, 256)
+		self.l8 = nn.Linear(256, 1)
 
 
 	def forward(self, state, action):
@@ -48,11 +52,13 @@ class Critic(nn.Module):
 
 		q1 = F.relu(self.l1(sa))
 		q1 = F.relu(self.l2(q1))
-		q1 = self.l3(q1)
+		q1 = F.relu(self.l3(q1))
+		q1 = self.l4(q1)
 
-		q2 = F.relu(self.l4(sa))
-		q2 = F.relu(self.l5(q2))
-		q2 = self.l6(q2)
+		q2 = F.relu(self.l5(sa))
+		q2 = F.relu(self.l6(q2))
+		q2 = F.relu(self.l7(q2))
+		q2 = self.l8(q2)
 		return q1, q2
 
 
@@ -61,7 +67,8 @@ class Critic(nn.Module):
 
 		q1 = F.relu(self.l1(sa))
 		q1 = F.relu(self.l2(q1))
-		q1 = self.l3(q1)
+		q1 = F.relu(self.l3(q1))
+		q1 = self.l4(q1)
 		return q1
 
 
@@ -80,11 +87,11 @@ class TD3(object):
 
 		self.actor = Actor(state_dim, action_dim, max_action).to(device)
 		self.actor_target = copy.deepcopy(self.actor)
-		self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=3e-4)
+		self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=1e-3)
 
 		self.critic = Critic(state_dim, action_dim).to(device)
 		self.critic_target = copy.deepcopy(self.critic)
-		self.critic_optimizer = torch.optim.Adam(self.critic.parameters(), lr=3e-4)
+		self.critic_optimizer = torch.optim.Adam(self.critic.parameters(), lr=1e-3)
 
 		self.max_action = max_action
 		self.discount = discount
@@ -104,7 +111,7 @@ class TD3(object):
 	def train(self, replay_buffer, batch_size=100):
 		self.total_it += 1
 
-		# Sample replay buffer 
+		# Sample replay buffer
 		state, action, next_state, reward, not_done = replay_buffer.sample(batch_size)
 
 		with torch.no_grad():
@@ -112,7 +119,7 @@ class TD3(object):
 			noise = (
 				torch.randn_like(action) * self.policy_noise
 			).clamp(-self.noise_clip, self.noise_clip)
-			
+
 			next_action = (
 				self.actor_target(next_state) + noise
 			).clamp(-self.max_action, self.max_action)
@@ -138,8 +145,8 @@ class TD3(object):
 
 			# Compute actor losse
 			actor_loss = -self.critic.Q1(state, self.actor(state)).mean()
-			
-			# Optimize the actor 
+
+			# Optimize the actor
 			self.actor_optimizer.zero_grad()
 			actor_loss.backward()
 			self.actor_optimizer.step()
@@ -155,7 +162,7 @@ class TD3(object):
 	def save(self, filename):
 		torch.save(self.critic.state_dict(), filename + "_critic")
 		torch.save(self.critic_optimizer.state_dict(), filename + "_critic_optimizer")
-		
+
 		torch.save(self.actor.state_dict(), filename + "_actor")
 		torch.save(self.actor_optimizer.state_dict(), filename + "_actor_optimizer")
 
@@ -168,4 +175,3 @@ class TD3(object):
 		self.actor.load_state_dict(torch.load(filename + "_actor"))
 		self.actor_optimizer.load_state_dict(torch.load(filename + "_actor_optimizer"))
 		self.actor_target = copy.deepcopy(self.actor)
-		
