@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import torch
 import gym
 import argparse
@@ -141,6 +142,9 @@ if __name__ == "__main__":
 		if (t + 1) % args.eval_freq == 0:
 			evaluations.append(eval_policy(policy, args.env, args.seed, args.n_steps, eval_episodes=1))
 			print(f"episode {t} train rewards: {episode_reward}")
-			np.save(f"./results/{file_name}", evaluations)
-			np.save(f"./results/train_{file_name}", train_rewards)
+			df_train = pd.DataFrame()
+			df_train["episode"] = np.arange(len(train_rewards))
+			df_train["train_cum_reward"] = train_rewards
+			df_train.to_pickle(f"./results/df_train.pkl")
+			np.save(f"./results/eval", evaluations)
 			if args.save_model: policy.save(f"./models/{file_name}")
