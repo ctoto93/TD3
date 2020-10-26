@@ -24,12 +24,13 @@ class SparsePendulumRBFEnv(PendulumEnv):
 
         high = np.array([1., 1., self.max_speed], dtype=np.float32)
         self.action_space = spaces.Box(low=-self.max_torque, high=self.max_torque, shape=(1,), dtype=np.float32)
-        self.original_observation_space = spaces.Box(low=-high, high=high, dtype=np.float32)
-
-        self.transformer = RadialBasisTransformer(self.original_observation_space, n_rbf, 'world_models/sparse_pendulum_rbf/inverse_rbf_5_5_17.h5')
-
-        high = np.array([np.inf] * self.transformer.rbf_dim, dtype=np.float32)
         self.observation_space = spaces.Box(low=-high, high=high, dtype=np.float32)
+
+        if n_rbf:
+            self.original_observation_space = spaces.Box(low=-high, high=high, dtype=np.float32)
+            self.transformer = RadialBasisTransformer(self.original_observation_space, n_rbf, 'world_models/sparse_pendulum_rbf/inverse_rbf_5_5_17.h5')
+            high = np.array([np.inf] * self.transformer.rbf_dim, dtype=np.float32)
+            self.observation_space = spaces.Box(low=-high, high=high, dtype=np.float32)
 
     def reward_binary(self, th, thdot, u):
         angle = np.degrees(angle_normalize(th))
@@ -71,45 +72,17 @@ class SparsePendulumRBFEnv(PendulumEnv):
 
     def reset(self):
         obs = super().reset()
-        obs = self.transformer.transform(obs.reshape(1,-1))[0]
+        if self.transformer:
+            obs = self.transformer.transform(obs.reshape(1,-1))[0]
         return obs
 
-    def calculate_next_state(self, state, u):
+    def step(self, u):
+        th, thdot = self.state # th := theta
+
         g = self.g
         m = self.m
         l = self.l
         dt = self.dt
-
-        th = state[:,0]
-        thdot = state[:,1]
-        u = np.clip(u, -self.max_torque, self.max_torque)
-
-        newthdot = thdot + (-3 * g / (2 * l) * np.sin(th + np.pi) + 3. / (m * l ** 2) * u) * dt
-        newth = th + newthdot * dt
-        newthdot = np.clip(newthdot, -self.max_speed, self.max_speed)
-
-        return newth, newthdot
-
-    def create_world_model(self):
-        def world_model(state_action):
-            x = state_action[:,0]
-            y = state_action[:,1]
-            thdot = state_action[:,2]
-            action = state_action[:,3]
-
-            th = np.arctan2(y, x)
-            state = np.stack((th, thdot), axis=1)
-
-            th, thdot = self.calculate_next_state(state, action)
-            x = np.cos(th)
-            y = np.sin(th)
-
-            return np.stack((x,y,thdot), axis=1)
-
-        return world_model
-
-    def step(self, u):
-        th, thdot = self.state
         done = False
         reward = 0
 
@@ -121,18 +94,13 @@ class SparsePendulumRBFEnv(PendulumEnv):
         elif self.reward_mode == REWARD_MODE_SPARSE:
             reward, done = self.reward_sparse(th, thdot, u)
 
-        newth, newthdot = self.calculate_next_state(
-            self.state.reshape(1,-1),
-            np.array([[u]])
-        )
+        newthdot = thdot + (-3*g/(2*l) * np.sin(th + np.pi) + 3./(m*l**2)*u) * dt
+        newth = th + newthdot*dt
+        newthdot = np.clip(newthdot, -self.max_speed, self.max_speed) #pylint: disable=E1111
 
-        self.state = np.stack((newth, newthdot), axis=1).squeeze()
-
+        self.state = np.array([newth, newthdot])
         obs = self._get_obs()
-        obs = self.transformer.transform(obs.reshape(1,-1))[0]
+        if self.transformer:
+            obs = self.transformer.transform(obs.reshape(1,-1))[0]
 
         return obs, reward, done, {}
-
-    def to_obs(self, state):
-        theta, thetadot = state
-        return np.array([np.cos(theta), np.sin(theta), thetadot])
