@@ -12,7 +12,7 @@ register(
          'balance_counter': 5,
          'reward_mode': REWARD_MODE_BINARY,
          'cumulative': True,
-         'n_rbf': [5,5,17]
+         'n_rbf': None
     }
 
 )
