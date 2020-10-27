@@ -46,6 +46,7 @@ if __name__ == "__main__":
 	parser.add_argument("--max_timesteps", default=50000, type=int)   # Max time steps to run environment
 	parser.add_argument("--n_steps", default=50, type=int)   		# 1 episode how many steps in the environment
 	parser.add_argument("--expl_noise", default=0.5)                # Std of Gaussian exploration noise
+	parser.add_argument("--buffer_size", default=1e6, type=int)      # replay buffer size
 	parser.add_argument("--batch_size", default=256, type=int)      # Batch size for both actor and critic
 	parser.add_argument("--discount", default=0.95)                 # Discount factor
 	parser.add_argument("--tau", default=0.005, type=float)                     # Target network update rate
@@ -101,7 +102,7 @@ if __name__ == "__main__":
 		policy_file = file_name if args.load_model == "default" else args.load_model
 		policy.load(f"./models/{policy_file}")
 
-	replay_buffer = utils.ReplayBuffer(state_dim, action_dim)
+	replay_buffer = utils.ReplayBuffer(state_dim, action_dim, max_size=args.buffer_size)
 
 	# Evaluate untrained policy
 
