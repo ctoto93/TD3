@@ -11,7 +11,7 @@ register(
          'reward_speed_limit': 1.0,
          'balance_counter': 5,
          'reward_mode': REWARD_MODE_BINARY,
-         'cumulative': True,
+         'cumulative': False,
          'n_rbf': None
     }
 
