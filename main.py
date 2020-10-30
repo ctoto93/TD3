@@ -30,7 +30,7 @@ def eval_policy(policy, env_name, seed, n_steps, eval_episodes=10):
 		state = eval_env._get_obs().reshape(1, -1)
 		if eval_env.transformer:
 			state = eval_env.transformer.transform(state)
-			while step in range(n_steps):
+			while step in range(100):
 				action = policy.select_action(np.array(state))
 				state, reward, done, _ = eval_env.step(action)
 				avg_reward += reward
