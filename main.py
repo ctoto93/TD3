@@ -175,11 +175,11 @@ if __name__ == "__main__":
 			df_eval["episode"] = t + 1
 			df_eval["cum_rewards"] = reward
 			df_eval["step"] = step
+			df_eval.to_pickle(f"./results/df_eval.pkl")
 			print(f"episode {t} train rewards: {episode_reward}")
 			df_train = pd.DataFrame()
 			df_train["episode"] = np.arange(len(train_rewards))
 			df_train["train_cum_reward"] = train_rewards
 			df_train.to_pickle(f"./results/df_train.pkl")
-			np.save(f"./results/eval", evaluations)
 			if args.save_model:
 				policy.save(f"./models/{file_name}")
