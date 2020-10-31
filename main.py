@@ -163,6 +163,9 @@ if __name__ == "__main__":
 			state = next_state
 			episode_reward += reward
 
+			if done:
+				break
+
 
 		train_rewards.append(episode_reward)
 		policy.train(replay_buffer, args.batch_size)
