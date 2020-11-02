@@ -62,9 +62,9 @@ if __name__ == "__main__":
 	# How often (time steps) we evaluate
 	parser.add_argument("--eval_freq", default=1000, type=int)
 	# Max time steps to run environment
-	parser.add_argument("--max_timesteps", default=50000, type=int)
+	parser.add_argument("--max_timesteps", default=100000, type=int)
 	# 1 episode how many steps in the environment
-	parser.add_argument("--n_steps", default=50, type=int)
+	parser.add_argument("--n_steps", default=100, type=int)
 	# Std of Gaussian exploration noise
 	parser.add_argument("--expl_noise", default=0.5)
 	parser.add_argument("--buffer_size", default=1e6,
