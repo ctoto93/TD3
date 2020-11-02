@@ -145,6 +145,7 @@ if __name__ == "__main__":
 	episode_reward = 0
 	episode_timesteps = 0
 	episode_num = 0
+	df_eval = pd.DataFrame(columns =  ["episode", "cum_rewards", "eval", "step"])
 
 	for t in tqdm(range(args.max_timesteps)):
 		state, done = env.reset(), False
@@ -176,10 +177,7 @@ if __name__ == "__main__":
 		if (t + 1) % args.eval_freq == 0:
 			reward, step = eval_policy(
 				policy, args.env, args.seed, args.n_steps, eval_episodes=1)
-			df_eval = pd.DataFrame()
-			df_eval["episode"] = t + 1
-			df_eval["cum_rewards"] = reward
-			df_eval["step"] = step
+			df_eval = df_eval.append({"episode": t+1, "cum_rewards": reward, "step": step}, ignore_index=True)
 			df_eval.to_pickle(f"./results/df_eval.pkl")
 			print(f"episode {t} train rewards: {episode_reward}")
 			df_train = pd.DataFrame()
