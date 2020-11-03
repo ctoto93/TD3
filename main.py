@@ -178,11 +178,11 @@ if __name__ == "__main__":
 			reward, step = eval_policy(
 				policy, args.env, args.seed, args.n_steps, eval_episodes=1)
 			df_eval = df_eval.append({"episode": t+1, "cum_rewards": reward, "step": step}, ignore_index=True)
-			df_eval.to_pickle(f"./results/df_eval.pkl")
+			df_eval.to_pickle(f"./results/{file_name}_df_eval.pkl")
 			print(f"episode {t} train rewards: {episode_reward}")
 			df_train = pd.DataFrame()
 			df_train["episode"] = np.arange(len(train_rewards))
 			df_train["train_cum_reward"] = train_rewards
-			df_train.to_pickle(f"./results/df_train.pkl")
+			df_train.to_pickle(f"./results/{file_name}_df_train.pkl")
 			if args.save_model:
 				policy.save(f"./models/{file_name}")
