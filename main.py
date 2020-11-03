@@ -148,6 +148,4 @@ if __name__ == "__main__":
 			df_train = pd.DataFrame()
 			df_train["episode"] = np.arange(len(train_rewards))
 			df_train["train_cum_reward"] = train_rewards
-			df_train.to_pickle(f"./results/df_train.pkl")
-			np.save(f"./results/eval", evaluations)
-			if args.save_model: policy.save(f"./models/{file_name}")
+			df_train.to_pickle(f"./results/{file_name}_df_train.pkl")
