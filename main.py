@@ -152,10 +152,13 @@ if __name__ == "__main__":
 		episode_reward = 0
 
 		for _ in range(args.n_steps):
-			action = (
-				policy.select_action(np.array(state))
-				+ np.random.normal(0, max_action * args.expl_noise, size=action_dim)
-			).clip(-max_action, max_action)
+			if t < args.start_timesteps:
+				action = env.action_space.sample()
+			else:
+				action = (
+					policy.select_action(np.array(state))
+					+ np.random.normal(0, max_action * args.expl_noise, size=action_dim)
+				).clip(-max_action, max_action)
 
 			next_state, reward, done, _ = env.step(action)
 			done_bool = 0
