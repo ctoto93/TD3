@@ -9,7 +9,6 @@ do
 	--policy "TD3" \
 	--buffer_size 1000000 \
 	--batch_size 256 \
-	--start_timesteps 1000 \
 	--max_timesteps 20000 \
 	--seed $i
 done
