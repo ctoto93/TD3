@@ -19,7 +19,7 @@ register(
 
 register(
     id='ContinuousGridWorld-v0',
-    entry_point='rlboxes.envs:ContinuousGridWorldEnv',
+    entry_point='envs.continuous_grid_world:ContinuousGridWorldEnv',
     kwargs={
          'width': 1,
          'height': 1,
