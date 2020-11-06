@@ -30,7 +30,7 @@ register(
          'radial_basis_fn': True,
          'x_dim': 10,
          'y_dim': 10,
-         'cumulative': False
+         'cumulative': True
     }
 
 )
