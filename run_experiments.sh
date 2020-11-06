@@ -5,7 +5,7 @@
 for ((i=0;i<1;i+=1))
 do
 	python main.py \
-	--env SparsePendulumRBF-v0 \
+	--env ContinuousGridWorld-v0 \
 	--policy "TD3" \
 	--expl_noise 0.5 \
 	--policy_noise 0.2 \
