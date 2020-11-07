@@ -2,7 +2,7 @@
 
 # Script to reproduce results
 
-for ((i=0;i<3;i+=1))
+for ((i=0;i<1;i+=1))
 do
 	python main.py \
 	--env SparsePendulumRBF-v0 \
@@ -29,5 +29,4 @@ do
 	--start_timesteps 0 \
 	--max_timesteps 5000 \
 	--seed $i
-
 done
