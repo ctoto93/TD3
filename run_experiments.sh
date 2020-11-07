@@ -7,34 +7,33 @@ do
 	python main.py \
 	--env ContinuousGridWorld-v0 \
 	--policy "TD3" \
-	--expl_noise 0.5 \
-	--policy_noise 0.2 \
-	--noise_clip 0.5\
-	--tau 1.0 \
-	--buffer_size 1000000 \
-	--batch_size 256 \
-	--start_timesteps 1000 \
-	--max_timesteps 5000 \
-	--seed $i
-
-	python main.py \
-	--env SparsePendulumRBF-v0 \
-	--policy "TD3" \
-	--expl_noise 0.5 \
-	--policy_noise 0.1 \
-	--noise_clip 0.2\
-	--tau 1.0 \
+	--expl_noise 0.01 \
+	--policy_noise 0.02 \
+	--noise_clip 0.05\
+	--tau 0.5 \
 	--buffer_size 1000000 \
 	--batch_size 256 \
 	--max_timesteps 5000 \
 	--seed $i
 
 	python main.py \
-	--env SparsePendulumRBF-v0 \
+	--env ContinuousGridWorld-v0 \
 	--policy "TD3" \
-	--expl_noise 0.5 \
-	--policy_noise 0.05 \
-	--noise_clip 0.1\
+	--expl_noise 0.01 \
+	--policy_noise 0.02 \
+	--noise_clip 0.05\
+	--tau 1.0 \
+	--buffer_size 1000000 \
+	--batch_size 256 \
+	--max_timesteps 5000 \
+	--seed $i
+
+	python main.py \
+	--env ContinuousGridWorld-v0 \
+	--policy "TD3" \
+	--expl_noise 0.01 \
+	--policy_noise 0.005 \
+	--noise_clip 0.01\
 	--tau 1.0 \
 	--buffer_size 1000000 \
 	--batch_size 256 \
