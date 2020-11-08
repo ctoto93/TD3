@@ -13,7 +13,7 @@ do
 	--tau 0.5 \
 	--buffer_size 1000000 \
 	--batch_size 256 \
-	--max_timesteps 10000 \
+	--max_timesteps 5000 \
 	--seed $i
 
 	python main.py \
@@ -25,7 +25,7 @@ do
 	--tau 0.5 \
 	--buffer_size 1000000 \
 	--batch_size 256 \
-	--max_timesteps 10000 \
+	--max_timesteps 5000 \
 	--seed $i
 
 	python main.py \
@@ -37,7 +37,7 @@ do
 	--tau 0.5 \
 	--buffer_size 1000000 \
 	--batch_size 256 \
-	--max_timesteps 10000 \
+	--max_timesteps 5000 \
 	--seed $i
 
 done
