@@ -13,7 +13,19 @@ do
 	--tau 0.5 \
 	--buffer_size 1000000 \
 	--batch_size 256 \
-	--max_timesteps 5000 \
+	--max_timesteps 10000 \
+	--seed $i
+
+	python main.py \
+	--env ContinuousGridWorld-v0 \
+	--policy "TD3" \
+	--expl_noise 0.01 \
+	--policy_noise 0.01 \
+	--noise_clip 0.02\
+	--tau 0.5 \
+	--buffer_size 1000000 \
+	--batch_size 256 \
+	--max_timesteps 10000 \
 	--seed $i
 
 	python main.py \
@@ -25,7 +37,7 @@ do
 	--tau 0.5 \
 	--buffer_size 1000000 \
 	--batch_size 256 \
-	--max_timesteps 5000 \
+	--max_timesteps 10000 \
 	--seed $i
 
 done
