@@ -45,7 +45,7 @@ if __name__ == "__main__":
 	parser.add_argument("--eval_freq", default=1000, type=int)       # How often (time steps) we evaluate
 	parser.add_argument("--max_timesteps", default=50000, type=int)   # Max time steps to run environment
 	parser.add_argument("--n_steps", default=15, type=int)   		# 1 episode how many steps in the environment
-	parser.add_argument("--expl_noise", default=0.5)                # Std of Gaussian exploration noise
+	parser.add_argument("--expl_noise", default=0.5, type=float)                # Std of Gaussian exploration noise
 	parser.add_argument("--buffer_size", default=1e6, type=int)      # replay buffer size
 	parser.add_argument("--batch_size", default=256, type=int)      # Batch size for both actor and critic
 	parser.add_argument("--discount", default=0.95)                 # Discount factor
