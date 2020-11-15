@@ -56,7 +56,7 @@ if __name__ == "__main__":
 	parser.add_argument("--save_model", action="store_true")        # Save model and optimizer parameters
 	parser.add_argument("--load_model", default="")                 # Model load file name, "" doesn't load, "default" uses file_name
 	args = parser.parse_args()
-	file_name = f"{args.policy}_{args.env}_expl_noise_{args.expl_noise}_policy_noise_{args.policy_noise}_noise_clip_{args.noise_clip}_tau_{args.tau}_steps_{args.n_steps}_buffer_{args.buffer_size}"
+	file_name = f"{args.policy}_{args.env}_expl_noise_{args.expl_noise}_policy_noise_{args.policy_noise}_noise_clip_{args.noise_clip}_tau_{args.tau}_steps_{args.n_steps}_buffer_{args.buffer_size}_seed{args.seed}"
 	print("---------------------------------------")
 	print(f"Policy: {args.policy}, Env: {args.env}, Seed: {args.seed}")
 	print("---------------------------------------")
